@@ -1,13 +1,14 @@
 package com.example.androidqr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -15,7 +16,10 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends AppCompatActivity {
+    //view Objects
     private Button buttonScan;
     private TextView textViewName, textViewAddress, textViewResult;
 
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //View Objects
-        buttonScan = (Button) findViewById(R.id.scanbtn);
+        buttonScan = (Button) findViewById(R.id.buttonScan);
         textViewName = (TextView) findViewById(R.id.textViewName);
         textViewAddress = (TextView) findViewById(R.id.textViewAddress);
         textViewResult = (TextView)  findViewById(R.id.textViewResult);
@@ -54,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
         if (result != null) {
             //qrcode 가 없으면
             if (result.getContents() == null) {
-                Toast.makeText(MainActivity.this, "취소", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "취소!", Toast.LENGTH_SHORT).show();
             } else {
                 //qrcode 결과가 있으면
-                Toast.makeText(MainActivity.this, "스캔완료", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "스캔완료!", Toast.LENGTH_SHORT).show();
                 try {
                     //data를 json으로 변환
                     JSONObject obj = new JSONObject(result.getContents());
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     textViewResult.setText(result.getContents());
                 }
             }
+
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
