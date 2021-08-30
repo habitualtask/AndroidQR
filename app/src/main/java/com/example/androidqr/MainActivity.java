@@ -1,5 +1,5 @@
 package com.example.androidqr;
-
+import android.app.Activity;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import static java.security.AccessController.getContext;
 public class MainActivity extends AppCompatActivity {
     //view Objects
     private Button buttonScan;
-
+    private TextView textViewName, textViewAddress, textViewResult;
 
     //qr code scanner object
     private IntentIntegrator qrScan;
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         //View Objects
         buttonScan = (Button) findViewById(R.id.buttonScan);
 
-
         //intializing scan object
         qrScan = new IntentIntegrator(this);
 
@@ -43,20 +42,35 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //scan option
                 qrScan.setPrompt("Scanning...");
-                //qrScan.setOrientationLocked(false);   //default가 세로모드, 휴대폰 방향에 따라 가로,세로 변경가능
+                //qrScan.setOrientationLocked(false);
                 qrScan.initiateScan();
-                Intent intent = new Intent(getApplicationContext(),QrActivity.class);
-
-                intent.putExtra("img","모니터사진");
-                intent.putExtra("title","모니터01");
-                intent.putExtra("category","장비");
-                intent.putExtra("company","델");
-                intent.putExtra("serial","101-212");
-                intent.putExtra("remark","주의하여 사용하세요");
-                //url 접속 후 비품상세정보 가져오기 ...?
-                //가져온 정보 putExtra
             }
         });
     }
 
+    //Getting the scan results
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            //qrcode 가 없으면
+            if (result.getContents() == null) {
+                Toast.makeText(MainActivity.this, "취소!", Toast.LENGTH_SHORT).show();
+            } else {
+                //qrcode 결과가 있으면
+                Toast.makeText(MainActivity.this, "스캔완료!", Toast.LENGTH_SHORT).show();
+                try {
+                    //data를 json으로 변환
+                    JSONObject obj = new JSONObject(result.getContents());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    //Toast.makeText(MainActivity.this, result.getContents(), Toast.LENGTH_LONG).show();
+                    textViewResult.setText(result.getContents());
+                }
+            }
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }
